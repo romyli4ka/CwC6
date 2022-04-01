@@ -8,21 +8,37 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContactWebModels;
 using MyContactManagerData;
+using Microsoft.Extensions.Caching.Memory;
+using ContactWebcore6.Models;
 
 namespace ContactWebcore6.Controllers
 {
     public class StatesController : Controller
     {
         private readonly MyContactManagerDbContext _context;
+        private IMemoryCache _cache;
 
-        public StatesController(MyContactManagerDbContext context)
+        public StatesController(MyContactManagerDbContext context, IMemoryCache cache)
+
         {
             _context = context;
+            _cache= cache; 
         }
 
         // GET: States
         public async Task<IActionResult> Index()
         {
+            var allStates = new List<State>();
+            if(!_cache.TryGetValue(ContactCacheContacts.ALL_STATES, out allStates))
+            {
+               var allStatesData= await _context.State.ToListAsync();
+
+                _cache.Set(ContactCacheContacts.ALL_STATES, allStatesData, TimeSpan.FromDays(1) );
+                return View(allStatesData);
+
+            }
+
+            
             return View(await _context.State.ToListAsync());
         }
 
@@ -61,6 +77,9 @@ namespace ContactWebcore6.Controllers
             {
                 _context.Add(state);
                 await _context.SaveChangesAsync();
+                _cache.Remove(ContactCacheContacts.ALL_STATES);
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(state);
@@ -75,6 +94,7 @@ namespace ContactWebcore6.Controllers
             }
 
             var state = await _context.State.FindAsync(id);
+
             if (state == null)
             {
                 return NotFound();
@@ -99,7 +119,9 @@ namespace ContactWebcore6.Controllers
                 try
                 {
                     _context.Update(state);
+                   
                     await _context.SaveChangesAsync();
+                    _cache.Remove(ContactCacheContacts.ALL_STATES);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,6 +165,7 @@ namespace ContactWebcore6.Controllers
             var state = await _context.State.FindAsync(id);
             _context.State.Remove(state);
             await _context.SaveChangesAsync();
+            _cache.Remove(ContactCacheContacts.ALL_STATES);
             return RedirectToAction(nameof(Index));
         }
 
