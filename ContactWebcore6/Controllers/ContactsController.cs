@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContactWebModels;
 using MyContactManagerData;
+using ContactWebcore6.Models;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ContactWebcore6.Controllers
 {
@@ -11,13 +13,29 @@ namespace ContactWebcore6.Controllers
         private readonly MyContactManagerDbContext _context;
         private static List<State> _allStates;
         private static SelectList _statesData;
+        private IMemoryCache _cache;
 
-        public ContactsController(MyContactManagerDbContext context)
+        public ContactsController(MyContactManagerDbContext context, IMemoryCache cache)
         {
             _context = context;
-            _allStates = Task.Run(() => _context.State.ToListAsync()).Result;
-             _statesData = new SelectList(_context.State,"Id","Abbreviation");
+            _cache = cache;
+            SetAllstatesCachingData();
+            _statesData = new SelectList(_context.State,"Id","Abbreviation");
+             
+        }
 
+        private void SetAllstatesCachingData()
+        {
+            var allStates = new List<State>();
+            if (!_cache.TryGetValue(ContactCacheContacts.ALL_STATES, out allStates))
+            {
+                var allStatesData = Task.Run(()=> _context.State.ToListAsync()).Result;
+
+                _cache.Set(ContactCacheContacts.ALL_STATES, allStatesData, TimeSpan.FromDays(1));
+                allStates= _cache.Get(ContactCacheContacts.ALL_STATES) as List<State>;
+
+            }
+            _allStates = allStates;
         }
 
         private async Task UpdateStateAndResetModelState(Contact contact)
@@ -75,7 +93,9 @@ namespace ContactWebcore6.Controllers
             UpdateStateAndResetModelState(contact);
             if (ModelState.IsValid)
             {
-                _context.Contacts.AddAsync(contact);
+              var state = await _context.State.SingleOrDefaultAsync(x=> x.Id == contact.StateId);
+                contact.State=state;
+                await _context.Contacts.AddAsync(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
