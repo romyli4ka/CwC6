@@ -82,7 +82,7 @@ namespace ContactWebcore6.Controllers
             {
                 // _context.Add(state);
                 //  await _context.SaveChangesAsync();
-              await _statesService.AddorUpdateAsync(state);
+              await _statesService.AddOrUpdateAsync(state);
 
                 
                 
@@ -131,7 +131,7 @@ namespace ContactWebcore6.Controllers
                     //     _context.Update(state);  
                     //     await _context.SaveChangesAsync();
 
-                    await _statesService.AddorUpdateAsync(state);
+                    await _statesService.AddOrUpdateAsync(state);
                     _cache.Remove(ContactCacheContacts.ALL_STATES);
                 }
                 catch (DbUpdateConcurrencyException)

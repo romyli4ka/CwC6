@@ -16,5 +16,11 @@ namespace ContactWebModels
         [Required (ErrorMessage ="State Abriviation is required")]
         [StringLength(ContactManagerConstants.MAX_STATE_ABBR_LENGTH)]
         public string Abbreviation { get; set; }
+      
+
+        public static implicit operator State(Contact v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
