@@ -24,9 +24,9 @@ namespace MyContactManagerServices
             return await _stateRepository.GetAsync(id);
         }
 
-        public async Task<int> AddorUpdateAsync(State state)
+        public async Task<int> AddOrUpdateAsync(State state)
         {
-           return await _stateRepository.AddorUpdateAsync(state);
+           return await _stateRepository.AddOrUpdateAsync(state);
         }
 
         public async Task<int> DeleteAsync(int id)

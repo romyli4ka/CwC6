@@ -22,7 +22,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IStateService, StateServices>();
 builder.Services.AddScoped<IStatesRepository, StatesRepository>();
 builder.Services.AddScoped<IContactsRepository, ContactsRepository>();
-builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IContactService, ContactsService>();
 
 var app = builder.Build();
 

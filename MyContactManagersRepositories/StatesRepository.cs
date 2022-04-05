@@ -31,7 +31,7 @@ namespace MyContactManagersRepositories
 
 
 
-        public async Task<int> AddorUpdateAsync(State state)
+        public async Task<int> AddOrUpdateAsync(State state)
         {
             if (state.Id > 0)
             {
