@@ -16,3 +16,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.active-link{
+    font-weight: bold;
+    background-color: lightgrey;
+
+}
