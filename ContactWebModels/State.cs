@@ -18,9 +18,6 @@ namespace ContactWebModels
         public string Abbreviation { get; set; }
       
 
-        public static implicit operator State(Contact v)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
