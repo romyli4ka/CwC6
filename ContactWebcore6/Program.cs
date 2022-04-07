@@ -17,13 +17,14 @@ builder.Services.AddDbContext<MyContactManagerDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IStateService, StateServices>();
 builder.Services.AddScoped<IStatesRepository, StatesRepository>();
 builder.Services.AddScoped<IContactsRepository, ContactsRepository>();
 builder.Services.AddScoped<IContactService, ContactsService>();
-
+builder.Services.AddScoped<IUsersRolse, UserRoleService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

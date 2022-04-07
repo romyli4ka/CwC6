@@ -11,9 +11,12 @@ using MyContactManagerData;
 using Microsoft.Extensions.Caching.Memory;
 using ContactWebcore6.Models;
 using MyContactManagerServices;
+using Microsoft.AspNetCore.Authorization;
+using ContactWebcore6.Data;
 
 namespace ContactWebcore6.Controllers
 {
+    [Authorize(Roles = UserRoleService.ADMIN_ROLE_NAME)]
     public class StatesController : Controller
     {
 
@@ -66,11 +69,12 @@ namespace ContactWebcore6.Controllers
         }
 
         // GET: States/Create
+       
         public IActionResult Create()
         {
             return View();
         }
-
+       
         // POST: States/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
